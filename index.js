@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const { default: app } = require('./dist/app');
+const { default: app } = require('./build/app');
 
 console.log('Starting ...');
 
-const res = app();
+const res = app.play();
 
 console.log(res);

@@ -25,7 +25,11 @@ or
 npm run start:build
 ```
 to build then start
-
+or 
+```
+npm run start:dev
+```
+to start the app in dev mode
 # Tests
 
 ```

@@ -1,11 +1,39 @@
 {
   "compilerOptions": {
+    /* Basic Options */
+    "target": "es5",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es6",
+    "lib": ["es6"],
+    "outDir": "build",
+    "rootDir": "src",
+    "removeComments": true,
+    "importHelpers": true,
+    "downlevelIteration": true,
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+
+    /* Additional Checks */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "allowUnreachableCode": false,
+
+    /* Module Resolution Options */
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist"
+    "esModuleInterop": true,  
   },
-  "lib": ["es2015"]
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    "src/**/*.spec.ts"
+  ]
 }
