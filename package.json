@@ -9,7 +9,7 @@
     "start:dev": "npx nodemon",
     "start:build": "npm run build && npm run start",
     "test": "jest --coverage",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watch --coverage",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
