@@ -1,25 +1,60 @@
-import { Move } from './types/Move';
-import { compare } from './utils/comparison';
+import crypto from 'crypto';
+
+import { Player } from './types/Player';
+import { PlayerMove } from './types/PlayerMove';
+import compareMoves from './utils/compareMoves';
 import generateMove from './utils/generateMove';
-import { convertStringToMove, convertMoveToString } from './utils/convert';
+import { convertStringToMove } from './utils/convert';
 
-function play(input: string, onSuccess: (winner: string, moves: Array<string>) => void, onError: (reason?: unknown) => void) {
+function formatPlayer(name = 'AI', id: string = crypto.randomUUID()): Player {
+  return {name, id};
+}
+
+function play(p1: PlayerMove, p2: PlayerMove): Player | undefined {
+  
+  const result: PlayerMove | null = compareMoves(p1, p2);
+  
+  
+  return result?.player;
+}
+
+function playSolo(input: string, onSuccess: (winner: Player | undefined, moves: Array<PlayerMove>) => void, onError: (reason?: unknown) => void) {
   try {
-    const inputMove: Move = convertStringToMove(input);
-    const opponentMove: Move = generateMove();
-    
-    const result: number = compare(inputMove, opponentMove);
-    let winner = 'tie';
-    if (result < 0) { winner = 'Player1'; }
-    if (result > 0) { winner = 'Opponent'; }
+    const p1: PlayerMove = {
+      player: formatPlayer('Player1'),
+      move: convertStringToMove(input)
+    };
+    const p2: PlayerMove = {
+      player: formatPlayer(),
+      move: generateMove()
+    };
+    const winner = play(p1, p2);
 
+    onSuccess(winner, [p1, p2]);
+  } catch (error) {
+    onError(error);
+  }
+}
 
-    onSuccess(winner, [convertMoveToString(inputMove), convertMoveToString(opponentMove)]);
+function play2Players(p1Input: string, p2Input: string, onSuccess: (winner: Player | undefined, moves: Array<PlayerMove>) => void, onError: (reason?: unknown) => void) {
+  try {
+    const p1: PlayerMove = {
+      player: formatPlayer('Player1'),
+      move: convertStringToMove(p1Input)
+    };
+    const p2: PlayerMove = {
+      player: formatPlayer('Player2'),
+      move: convertStringToMove(p2Input)
+    };
+    const winner = play(p1, p2);
+
+    onSuccess(winner, [p1, p2]);
   } catch (error) {
     onError(error);
   }
 }
 
 export default {
-  play,
+  playSolo,
+  play2Players
 };

@@ -1,8 +1,8 @@
 import { Move } from '../types/Move';
 
-import {compare} from './comparison';
+import {compare} from './compareMoves';
 
-describe('utils/comparison', () => {
+describe('utils/compareMoves', () => {
   describe('compare', () => {
     it('should return 0 if both moves are the same', () => {
       const res = compare(Move.Paper, Move.Paper);

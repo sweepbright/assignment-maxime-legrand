@@ -1,26 +1,36 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const readline = require('readline');
+const readlineSync = require('readline-sync');
 const { default: app } = require('./build/app');
 
+function displayPlayerMove({name, move}) {
+  console.log(`${name} played ${move}`);
+}
 
-function askQuestion(query) {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
+const movesOpts = {
+  limit: ['Rock', 'Paper', 'Scissors'],
+  hideEchoBack: true,
+  mask: ''
+}
 
-    return new Promise(resolve => rl.question(query, ans => {
-        rl.close();
-        resolve(ans);
-    }))
+function askQuestion(query, opts) {
+  return new Promise(resolve => {
+    const answer = readlineSync.question(query, opts);
+    resolve(answer);
+  })
 }
 
 
-function onSuccess(winner, moves) {
-  console.log(`You played ${moves[0]}, your opponent played ${moves[1]}`);
-  console.log(`The winner is: ${winner}`);
+function onSuccess(winner, playersMove) {
+  const [p1, p2] = playersMove;
+  displayPlayerMove({...p1, ...p1.player});
+  displayPlayerMove({...p2, ...p2.player});
+  if (!winner?.name) {
+    console.log('TIE');
+  } else {
+    console.log(`The winner is: ${winner.name}`);
+  }
 }
 
 function onError(error) {
@@ -28,8 +38,15 @@ function onError(error) {
 }
 
 async function playSoloGame() {
-  const ans = await askQuestion('Enter your move ("Rock", "Paper", "Scissors"):');
-  app.play(ans, onSuccess, onError);
+  const ans = await askQuestion('Enter your move ("Rock", "Paper", "Scissors"):', movesOpts);
+  app.playSolo(ans, onSuccess, onError);
+}
+
+async function play2Players() {
+  console.log('2 Players : Enter your move ("Rock", "Paper", "Scissors")')
+  const p1Input = await askQuestion('Player1 : ', movesOpts);
+  const p2Input = await askQuestion('Player2 : ', movesOpts);
+  app.play2Players(p1Input, p2Input, onSuccess, onError);
 }
 
 function menu() {
@@ -38,11 +55,14 @@ function menu() {
 --MENU--
 --------
 1 -> Play Solo
+2 -> 2 players
 
 Exit -> Quit Application
-`).then(ans => {
+`, {limit: ['1', '2', 'Exit']}).then(ans => {
     switch (ans) {
       case '1': playSoloGame().then(menu); break;
+      case '2': play2Players().then(menu); break;
+      case 'exit':
       case 'Exit': {
         console.log('Thanks for playing');
         return;
